@@ -1,6 +1,5 @@
 package com.example.crud.springbootblogapplication.controllers;
 
-
 import com.example.crud.springbootblogapplication.services.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -13,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ImageController {
     private final FileService fileService;
 
-    @GetMapping("/images/{id}")
-    public Resource getImage(@PathVariable("id") String imageUri) {
-        return fileService.load(imageUri);
-    }
+//    @GetMapping("/images/{id}")
+//    public Resource getImage(@PathVariable("id") String imageUri) {
+//        return fileService.load(imageUri);
+//    }
 }

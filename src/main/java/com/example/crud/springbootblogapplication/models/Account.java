@@ -47,4 +47,5 @@ public class Account {
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     Set<Authority> authorities = new HashSet<>();
 
+
 }

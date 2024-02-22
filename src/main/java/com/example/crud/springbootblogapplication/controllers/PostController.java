@@ -3,7 +3,7 @@ package com.example.crud.springbootblogapplication.controllers;
 import com.example.crud.springbootblogapplication.models.Account;
 import com.example.crud.springbootblogapplication.models.Post;
 import com.example.crud.springbootblogapplication.services.AccountService;
-import com.example.crud.springbootblogapplication.services.PostService;;
+import com.example.crud.springbootblogapplication.services.PostService;
 import com.example.crud.springbootblogapplication.services.FileService;
 
 import lombok.RequiredArgsConstructor;
@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +24,6 @@ public class PostController {
 
     private final PostService postService;
     private final AccountService accountService;
-    private final FileService fileService;
 
     @GetMapping("/posts/{id}")
     public String getPost(@PathVariable Long id, Model model) {
@@ -46,7 +43,7 @@ public class PostController {
 
     @PostMapping("/posts/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String updatePost(@PathVariable Long id, Post post, @RequestParam("file") MultipartFile file) {
+    public String updatePost(@PathVariable Long id, Post post) {
 
         Optional<Post> optionalPost = postService.getById(id);
         if (optionalPost.isPresent()) {
@@ -54,13 +51,6 @@ public class PostController {
 
             existingPost.setTitle(post.getTitle());
             existingPost.setBody(post.getBody());
-
-            try {
-                fileService.save(file);
-                existingPost.setImageFilePath(file.getOriginalFilename());
-            } catch (Exception e) {
-                log.error("Error processing file: {}", file.getOriginalFilename());
-            }
 
             postService.save(existingPost);
         }
@@ -79,20 +69,13 @@ public class PostController {
 
     @PostMapping("/posts/new")
     @PreAuthorize("isAuthenticated()")
-    public String createNewPost(@ModelAttribute Post post, @RequestParam("file") MultipartFile file, Principal principal) {
+    public String createNewPost(@ModelAttribute Post post, Principal principal) {
         String authUsername = "anonymousUser";
         if (principal != null) {
             authUsername = principal.getName();
         }
 
         Account account = accountService.findOneByEmail(authUsername).orElseThrow(() -> new IllegalArgumentException("Account not found"));
-
-        try {
-            fileService.save(file);
-            post.setImageFilePath(file.getOriginalFilename());
-        } catch (Exception e) {
-            log.error("Error processing file: {}", file.getOriginalFilename());
-        }
 
         post.setAccount(account);
         postService.save(post);

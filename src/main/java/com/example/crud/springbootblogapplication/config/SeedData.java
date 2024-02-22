@@ -18,8 +18,7 @@ import java.util.Set;
 @Component
 public class SeedData implements CommandLineRunner {
 
-    @Autowired
-    private FileService fileService;
+
 
     @Autowired
     private PostService postService;
@@ -33,11 +32,10 @@ public class SeedData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        fileService.init();
 
         List<Post> posts = postService.getAll();
 
-        if (posts.size() == 0) {
+        if (posts.isEmpty()) {
 
             Authority user = new Authority();
             user.setName("ROLE_USER");
@@ -69,7 +67,6 @@ public class SeedData implements CommandLineRunner {
 
             Set<Authority> authorities2 = new HashSet<>();
             authorityRepository.findById("ROLE_ADMIN").ifPresent(authorities2::add);
-            //authorityRepository.findById("ROLE_USER").ifPresent(authorities2::add);
             account2.setAuthorities(authorities2);
 
             accountService.save(account1);

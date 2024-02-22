@@ -27,6 +27,6 @@ public class RegisterController {
     public String registerNewUser(@ModelAttribute Account account){
         accountService.save(account);
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 }
